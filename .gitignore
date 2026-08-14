@@ -1,0 +1,15 @@
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+env/
+
+# 产物
+results/*.dat
+*.log

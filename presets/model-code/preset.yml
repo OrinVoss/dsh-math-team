@@ -1,0 +1,2 @@
+name: 建模编程 Agent
+description: 团队数学建模的建模+编程岗位预设。2 名成员可共选本预设，各自独立会话工作区，通过 Gitee 仓库的三个独立文件夹（member-a / member-b）协同、互不干扰。负责题目分析与建模、代码实现（Python/MATLAB）、结果与图表产出、复现清单，以及 Gitee 提交/拉取。
