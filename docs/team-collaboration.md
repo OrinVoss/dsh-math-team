@@ -47,6 +47,16 @@ git branch -M main && git push -u origin main
 - Paper: `W1 evidence outline → evidence-search verification → W2 paper final-check`
 - Keep an independent review gate (severity blocker/high/medium/low + bounded-iteration budget)
 
+### Independent-model review (adversarial)
+
+To escape the main model's blind spots, dispatch the **independent review/QA sub-agent on a model different from the one that produced the work** (a different vendor works best) for adversarial critique and independent judgment. This catches defects the main model misses when reviewing its own output (fabricated numbers, inconsistent definitions, contradictory recommendations, fabricated citations).
+
+- **Recommended review model**: `kimi-coding / k3-256k` (validated on this host; 256k context, text+image). On another deployment, first probe a model whose `provider` differs from the main model via the `llm` service — **do not hardcode**.
+- Dispatch via `workflow`'s `agent(prompt, { provider: <review-provider>, model: <review-model> })`.
+- Review requirements: **factuality** (numbers traceable, no fabrication), **consistency** (definitions/symbols/conclusions coherent), **completeness** (covers all sub-problems), **independent verdict** (`pass`/`fail` + must-fix evidence, by severity).
+- On `fail`, fix per the evidence and re-review; the main model must not override a review FAIL verbally.
+- If no model on a different `provider` exists, honestly mark "independent review limited".
+
 ## Per-role kickoff prompts
 
 ### Member A / B — modeling+coding (pick the `model-code` preset)
