@@ -28,6 +28,19 @@
 - **质量门禁**：建模终检 M1 / 最小可运行 P1 / 编程终检 P2 / 证据大纲 W1 / 论文终检 W2
 - **识图子代理**：当主模型不支持图像输入时，用 `workflow` 派生一个**当前环境可用的视觉模型**子代理审查图表（自动探测 `inputModalities` 含 `image` 的模型，本环境已验证 `opencode-go/mimo-v2.5`，但不硬编码模型名）
 
+## 可复用全局 skill
+
+仓库自带一个可做**全局 skill** 安装的目录（放到 DSH 共享用户 skill 根，任何预设都能发现）：
+
+- `skills/vision-subagent/` — 识图子代理（视觉质检）。安装：
+  ```bash
+  # 复制到 DSH 共享用户 skill 根，任意预设会话自动发现
+  cp -R skills/vision-subagent ~/.agents/skills/vision-subagent
+  # Windows:
+  # Copy-Item -Recurse .\skills\vision-subagent "$env:USERPROFILE\.agents\skills\vision-subagent"
+  ```
+  DSH 的 `dsh-skill-filesystem` 会扫描 `~/.agents/skills/`、`~/.dsh/skills/`、项目 `.dsh/skills` 等共享根，放好后即被自动发现，无需改配置。
+
 ## 安装
 
 ### 前提

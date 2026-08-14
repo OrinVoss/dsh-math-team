@@ -28,6 +28,19 @@ This pack provides **2 role presets**:
 - **Quality gates**: Modeling final-check M1 / minimal runnable P1 / coding final-check P2 / evidence outline W1 / paper final-check W2
 - **Vision sub-agent**: when the main model does not accept image input, dispatch a sub-agent on a **vision-capable model in the current environment** via `workflow` (auto-probe models whose `inputModalities` includes `image`; `opencode-go/mimo-v2.5` was validated on this host, but model names are not hardcoded)
 
+## Reusable global skill
+
+The repo ships a directory installable as a **global skill** (drop it under a DSH shared user skill root; any preset discovers it):
+
+- `skills/vision-subagent/` — vision sub-agent (visual QA). Install:
+  ```bash
+  # Copy to the DSH shared user skill root; any preset session auto-discovers it
+  cp -R skills/vision-subagent ~/.agents/skills/vision-subagent
+  # Windows:
+  # Copy-Item -Recurse .\skills\vision-subagent "$env:USERPROFILE\.agents\skills\vision-subagent"
+  ```
+  DSH's `dsh-skill-filesystem` scans `~/.agents/skills/`, `~/.dsh/skills/`, project `.dsh/skills`, etc.; once placed, it is discovered automatically — no config change needed.
+
 ## Installation
 
 ### Prerequisites
