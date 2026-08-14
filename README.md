@@ -77,12 +77,44 @@ await agentPresets.standingKeyFor('paper')
 用 2023 高教社杯 C 题真实跑通的成果展示（完整链路与数据见 [全流程跑通记录](docs/示例题目全流程跑通记录.md)）：
 
 - [论文示例 `examples/论文示例.pdf`](examples/论文示例.pdf) — 33 页成稿论文（XeLaTeX 编译 + 18 幅正式图）
-- 代表性图表（`examples/figures/`）：
-  - **Q1 品类相关热力图 / 单品销量集中度 / 季节因子**
-  - **Q2 量价弹性 / 回测收益对比**（回测收益改进 +56.2%）
-  - **Q3 单品补货量 / 单品收益**
+- `examples/figures/` 收录 15 幅成果图，涵盖 **原始数据(raw) / 建模过程(process) / 最终结果(result)** 三阶段，覆盖 Q1–Q3 全部子问题：
 
-![Q1 单品销量集中度](examples/figures/Q1_单品销量集中度.png)
+**Q1 品类/单品销量分布与关系**
+
+![Q1 品类销量集中度](examples/figures/Q1_单品销量集中度.png)
+
+![Q1 品类相关热力图](examples/figures/Q1_品类相关热力图.png)
+
+| | |
+|---|---|
+| ![Q1 季节因子](examples/figures/Q1_季节因子.png) | ![Q1 周内因子](examples/figures/Q1_周内因子.png) |
+| **季节因子**（夏/春节双高） | **周内因子**（周末高峰） |
+
+| | |
+|---|---|
+| ![Q1 聚类树状图](examples/figures/process_Q1_品类聚类树状图.png) | ![Q1 原始日销量](examples/figures/raw_Q1_日销量时序.png) |
+| **品类聚类** | **原始日销量时序** |
+
+**Q2 品类量价与补货定价**
+
+![Q2 回测收益对比](examples/figures/Q2_回测收益对比.png)
+
+| | |
+|---|---|
+| ![Q2 量价弹性](examples/figures/Q2_量价弹性.png) | ![Q2 品类定价加成](examples/figures/Q2_品类定价加成.png) |
+| **价格弹性估计** | **品类成本加成定价** |
+
+**Q3 单品补货与定价**
+
+| | |
+|---|---|
+| ![Q3 单品补货量](examples/figures/Q3_单品补货量.png) | ![Q3 单品收益](examples/figures/Q3_单品收益.png) |
+| **入选单品补货量** | **单品收益** |
+
+| | |
+|---|---|
+| ![Q3 单品定价](examples/figures/Q3_单品定价.png) | ![Q3 灵敏度分析](examples/figures/process_Q3_灵敏度分析.png) |
+| **单品定价** | **满足率-收益灵敏度** |
 
 ## 方法论来源
 
