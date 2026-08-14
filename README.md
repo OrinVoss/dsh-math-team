@@ -1,5 +1,7 @@
 # DSH 数学建模团队插件包
 
+> 🌍 **English**: [README_en.md](README_en.md) — bilingual docs: [team-collaboration.md](docs/team-collaboration.md) · [vision-subagent.md](docs/vision-subagent.md) · [attribution.md](docs/attribution.md) · [sample-run.md](docs/sample-run.md)
+
 面向 **DeepSeek Harness** 的团队化数学建模工作流插件包。把参考成熟数学建模 Skill 仓库的方法论，整理成 **2 套可直接安装的 Agent 预设（preset）**，配合团队 **Gitee/GitHub 多文件夹协同**，实现多人在各自独立工作区互不干扰地协作完成数学建模竞赛题。
 
 本仓库挂载于 GitHub Topic：**`dsh-plugin`**。
@@ -71,6 +73,9 @@ await agentPresets.standingKeyFor('paper')
 - [识图子代理](docs/识图子代理.md) — 主模型不读图时的视觉审查方案
 - [方法论来源](docs/方法论来源.md) — 两套预设吸收的参考仓库内容清单
 - [示例题目全流程跑通记录](docs/示例题目全流程跑通记录.md) — 用 2023 国赛 C 题真实跑通「建模→论文→评审」完整链路的验证记录
+
+**English docs**: [team-collaboration.md](docs/team-collaboration.md) · [vision-subagent.md](docs/vision-subagent.md) · [attribution.md](docs/attribution.md) · [sample-run.md](docs/sample-run.md)
+
 
 ## 示例展示
 
