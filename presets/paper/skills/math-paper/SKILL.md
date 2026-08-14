@@ -69,10 +69,11 @@ git pull                     # 之后每次开始工作前拉取最新
 
 当前主模型可能不支持读图（`read_image` 拒读）。论文需要**核对配图视觉质量**（图是否清晰、空白/遮挡、坐标轴/图例是否缺失、是否与正文主张一致）时，派生一个**专门识图子代理**用视觉模型审查：
 
-- 用 `workflow` 工具派发子代理，在 `agent(prompt, { provider: 'opencode-go', model: 'mimo-v2.5' })` 里指定**视觉模型 `mimo-v2.5`**。
+- **先探测可用的视觉模型**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 挑出 `inputModalities` 含 `image` 的模型作为识图模型。本环境已验证 `opencode-go / mimo-v2.5`，但换部署后须重新探测。
+- 用 `workflow` 工具派发子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - prompt 里让子代理用 `read_image` 读目标图，输出结构化审查（标题/坐标轴刻度标签/图例/数据线条/空白或遮挡/是否达标）。
 - 审查结果并入 `评审记录.md`，作为 W2 论文终检中"图表"部分证据；发现图表缺陷时回退对应建模成员补齐。
-- 若 `mimo-v2.5` 不可用，用环境中其他 `inputModalities` 含 `image` 的模型。
+- 若探测不到任何 `image` 模型，则如实标记"此环境无视觉模型，视觉质检受限"，不假装通过。
 
 ## 渐进式加载
 

@@ -73,10 +73,12 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 当前主模型可能不支持读图（`read_image` 会拒读）。需要**审查图表视觉效果**（是否空白、遮挡、坐标轴缺标签、是否支撑结论）时，派生一个**专门识图子代理**，把图交给支持视觉的模型审查：
 
-- 用 `workflow` 工具派发一个子代理，在 `agent(prompt, { provider: 'opencode-go', model: 'mimo-v2.5' })` 里**指定视觉模型 `mimo-v2.5`**（它支持 `image` 输入、100 万上下文）。
+- **先探测可用的视觉模型**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。本环境已验证的候选是 `opencode-go / mimo-v2.5`（MiMo V2.5），但换部署后名字可能不同，务必重新探测。
+- 用 `workflow` 工具派发一个子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - 在 prompt 里告诉子代理用 `read_image` 工具读取目标图片路径，并要求它输出结构化审查（标题/坐标轴/图例/数据线条/空白或遮挡/是否达标）。
-- 例子：`agent('用 read_image 读取 D:\\...\\member-a\\figures\\result_q1.png，审查图表：标题、坐标轴刻度/标签、图例、线条、是否有空白或遮挡，给出可改进项。', { provider: 'opencode-go', model: 'mimo-v2.5' })`。
-- 若 `mimo-v2.5` 不可用，改用环境中其他支持 `image` 输入 `inputModalities` 的模型（可用 `llm` 服务 `resolveModelInfo` 查询确认）。
+- 例子（`provider`/`model` 用探测结果替换）：
+  `agent('用 read_image 读取 <图片路径>，审查图表：标题、坐标轴刻度/标签、图例、线条、是否有空白或遮挡，给出可改进项。', { provider: 'opencode-go', model: 'mimo-v2.5' })`
+- 若探测不到任何 `image` 模型，则如实标记"此环境无视觉模型，视觉质检受限"，不要假装通过。
 - 视觉审查结果作为 P2 编程终检 / 图表质检的证据之一。
 
 ## 与其他岗的交接
