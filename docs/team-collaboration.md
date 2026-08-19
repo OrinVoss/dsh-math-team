@@ -43,9 +43,18 @@ git branch -M main && git push -u origin main
 
 ## Quality gates
 
-- Modeling+coding: `M1 modeling final-check → P1 minimal runnable → P2 coding final-check → reproducibility verification`
-- Paper: `W1 evidence outline → evidence-search verification → W2 paper final-check`
+- Modeling+coding: `M1 modeling final-check → P1 minimal runnable → M2 robustness attack final-check → P2 coding final-check → reproducibility verification`
+- Paper: `W1 evidence outline (incl. model defense checklist) → evidence-search verification → W2 paper final-check (incl. applicability-boundary check)`
 - Keep an independent review gate (severity blocker/high/medium/low + bounded-iteration budget)
+
+### M2 robustness attack final-check (modeling role)
+
+Systematically "attack" every core model to avoid "not doubting the model enough after it is built": propose model → attack model → re-verify with an alternative method → add uncertainty → out-of-sample test → state the applicability boundary.
+
+- List 3–5 points per core model most likely to be attacked by judges (instrument validity, key parameter values, baseline dependence, stockout truncation, share stability) into `results/模型攻击清单.md`
+- Re-compute each attack point with at least one alternative method; report headline numbers with intervals, not just point estimates; keep an out-of-sample backtest for time series
+- State in the deliverables under what conditions the model holds / fails
+- M2 must pass before full-scale P2 figure generation
 
 ### Independent-model review (adversarial)
 
@@ -53,7 +62,7 @@ To escape the main model's blind spots, dispatch the **independent review/QA sub
 
 - **Recommended review model**: `kimi-coding / k3-256k` (validated on this host; 256k context, text+image). On another deployment, first probe a model whose `provider` differs from the main model via the `llm` service — **do not hardcode**.
 - Dispatch via `workflow`'s `agent(prompt, { provider: <review-provider>, model: <review-model> })`.
-- Review requirements: **factuality** (numbers traceable, no fabrication), **consistency** (definitions/symbols/conclusions coherent), **completeness** (covers all sub-problems), **independent verdict** (`pass`/`fail` + must-fix evidence, by severity).
+- Review requirements: **factuality** (numbers traceable, no fabrication), **consistency** (definitions/symbols/conclusions coherent), **completeness** (covers all sub-problems), **model attack** (question each core model's assumptions — instrument validity / key parameter values / baseline dependence / stockout truncation / share stability — and verify the stated applicability boundary), **independent verdict** (`pass`/`fail` + must-fix evidence, by severity).
 - On `fail`, fix per the evidence and re-review; the main model must not override a review FAIL verbally.
 - If no model on a different `provider` exists, honestly mark "independent review limited".
 
