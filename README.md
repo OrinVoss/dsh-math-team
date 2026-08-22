@@ -99,6 +99,51 @@ await agentPresets.standingKeyFor('paper')
 
 各岗位的开工口令模板见 `docs/团队协同.md`。
 
+## 完整工作流（两套预设 + 团队协同）
+
+```mermaid
+flowchart TB
+    subgraph team["团队（3 人）"]
+        A1["成员 A / B<br/>model-code 预设<br/>（建模+编程岗）"]
+        C1["成员 C<br/>paper 预设<br/>（论文岗）"]
+    end
+
+    subgraph modelcode["建模编程岗 流程（model-code）"]
+        M1["① 建模阶段<br/>读题 · 拆子问题 · 选模型<br/>产出：题目分析报告 · 术语表格"]
+        P1["② 最小可运行结果<br/><b>M1 建模终检 → P1</b>"]
+        M2["③ M2 稳健性攻击终检<br/>攻击模型 · 换法验证 · 区间 · 样本外 · 适用边界"]
+        P2["④ P2 编程终检<br/>真实结果 · 复现清单 · <b>强制图审</b>"]
+        A2["产出：results/ · figures/ · 复现清单.json"]
+        M1 --> P1 --> M2 --> P2 --> A2
+    end
+
+    subgraph paper["论文岗 流程（paper）"]
+        W1["⑤ W1 证据大纲<br/>含模型辩护清单（对应 M2）"]
+        SR["⑥ 证据检索核验"]
+        W2["⑦ W2 论文终检<br/>数值溯源 · 编号引用 · 适用边界 · <b>强制图审</b>"]
+        OUT["交付：完整论文.docx/pdf · 评审记录 · AI使用声明"]
+        W1 --> SR --> W2 --> OUT
+    end
+
+    subgraph global["贯穿全局能力"]
+        VISION["🖼️ 识图子代理（强制图审门禁）<br/>逐张审核 → FAIL → 修改 → 重审 → PASS"]
+        REVIEW["⚔️ 独立审查模型（对抗式评审）<br/>不同厂商模型 · 事实性/一致性/完备性/模型攻击/引用核验"]
+    end
+
+    A2 -->|"git push member-a/b"| REPO["Git 仓库<br/>member-a · member-b · member-c"]
+    REPO -->|"git pull 交接"| W1
+    VISION -.-> P2
+    VISION -.-> W2
+    REVIEW -.-> W2
+```
+
+**读图说明**：
+- **左列**（model-code）：成员 A/B 各自独立跑 ①→④，产出建模+编程交付物 push 到自己的 member 文件夹
+- **右列**（paper）：成员 C pull 到 A/B 交付物后，过 ⑤→⑦ 成稿
+- **门禁链**：M1 → P1 → M2 → P2（建模编程）；W1 → 证据检索 → W2（论文）
+- **贯穿全局**：识图子代理对**所有正式图强制图审**（P2 和 W2 都卡）；独立审查模型对论文做对抗式评审（W2 卡）
+- **互不干扰**：三人各提交自己的 member-* 文件夹，全程无冲突
+
 ## 文档
 
 - [团队协同说明](docs/团队协同.md) — 三文件夹协同协议、交接契约、各岗位开工口令

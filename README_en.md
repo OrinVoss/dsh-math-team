@@ -99,6 +99,51 @@ await agentPresets.standingKeyFor('paper')
 
 Per-role kickoff prompt templates: see `docs/team-collaboration.md`.
 
+## Full workflow (two presets + team collaboration)
+
+```mermaid
+flowchart TB
+    subgraph team["Team (3 people)"]
+        A1["Member A / B<br/>model-code preset<br/>(modeling + coding)"]
+        C1["Member C<br/>paper preset<br/>(paper)"]
+    end
+
+    subgraph modelcode["Modeling & coding flow (model-code)"]
+        M1["① Modeling phase<br/>read problem · split sub-problems · choose models<br/>outputs: analysis report · term table"]
+        P1["② Minimal runnable<br/><b>M1 final-check → P1</b>"]
+        M2["③ M2 robustness attack final-check<br/>attack model · alternative method · intervals · out-of-sample · boundary"]
+        P2["④ P2 coding final-check<br/>real results · reproducibility manifest · <b>mandatory image review</b>"]
+        A2["Outputs: results/ · figures/ · reproducibility manifest.json"]
+        M1 --> P1 --> M2 --> P2 --> A2
+    end
+
+    subgraph paper["Paper flow (paper)"]
+        W1["⑤ W1 evidence outline<br/>incl. model defense checklist (maps to M2)"]
+        SR["⑥ Evidence search & verification"]
+        W2["⑦ W2 paper final-check<br/>number traceability · numbering/citations · applicability boundary · <b>mandatory image review</b>"]
+        OUT["Deliver: final paper.docx/pdf · review record · AI-use disclosure"]
+        W1 --> SR --> W2 --> OUT
+    end
+
+    subgraph global["Cross-cutting capabilities"]
+        VISION["🖼️ Vision sub-agent (mandatory image-review gate)<br/>one-by-one review → FAIL → fix → re-review → PASS"]
+        REVIEW["⚔️ Independent review model (adversarial)<br/>different vendor · factuality/consistency/completeness/model attack/citations"]
+    end
+
+    A2 -->|"git push member-a/b"| REPO["Git repo<br/>member-a · member-b · member-c"]
+    REPO -->|"git pull handoff"| W1
+    VISION -.-> P2
+    VISION -.-> W2
+    REVIEW -.-> W2
+```
+
+**How to read it**:
+- **Left column (model-code)**: members A/B each run ①→④ independently, push modeling+coding deliverables to their own member folder
+- **Right column (paper)**: member C pulls A & B's deliverables, then runs ⑤→⑦ to produce the paper
+- **Gate chain**: M1 → P1 → M2 → P2 (modeling/coding); W1 → evidence search → W2 (paper)
+- **Cross-cutting**: vision sub-agent enforces **mandatory image review on all formal figures** (gated in both P2 and W2); independent review model adversarially reviews the paper (gated in W2)
+- **No interference**: each person commits only their own member-* folder
+
 ## Documentation
 
 - [Vision sub-agent](docs/vision-subagent.md) — vision review when the main model cannot read images
