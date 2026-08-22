@@ -135,12 +135,13 @@ flowchart LR
         T3["③ Evidence search & verify<br/>multi-source search → dedup → cross-check citations"]
         T4["④ W1 evidence outline<br/>structure × evidence mapping<br/>+ model defense checklist (maps to M2)"]
         G5["W1 pass criteria<br/>evidence per chapter · no orphan conclusions<br/>defense checklist complete"]
-        T5["⑤ Write paper<br/>Word (OMML) / LaTeX (optional)<br/>official template adaptation"]
+        T5["⑤ Write paper<br/>Word (OMML) / LaTeX (optional)<br/>official template adaptation → render PDF"]
         T6["⑥ Figure QA<br/>vision sub-agent one-by-one review (mandatory)"]
-        T7["⑦ Independent review<br/>different-vendor adversarial review<br/>(kimi-coding/k3-256k)"]
-        G6["W2 paper final-check<br/>formulas↔results · no empty fig/table<br/>numbering/citations continuous · boundary stated<br/>figure-review records · independent review PASS"]
+        T6b["⑦ Rendered-PDF page review (mandatory)<br/>each page → image → vision sub-agent per-page<br/>table overflow / bad fonts / tiny fonts / layout / blank pages"]
+        T7["⑧ Independent review<br/>different-vendor adversarial review<br/>(kimi-coding/k3-256k)"]
+        G6["W2 paper final-check<br/>formulas↔results · no empty fig/table<br/>numbering/citations continuous · boundary stated<br/>figure-review records · rendered-PDF review PASS · independent review PASS"]
         D3["Deliver: final paper.docx/pdf<br/>review record.md · code appendix · AI-use disclosure"]
-        T1 --> T2 --> T3 --> T4 --> G5 --> T5 --> T6 --> T7 --> G6 --> D3
+        T1 --> T2 --> T3 --> T4 --> G5 --> T5 --> T6 --> T6b --> T7 --> G6 --> D3
     end
 
     D2 -->|"git add member-a/b<br/>commit · push"| REPO["Git repo<br/>member-a / member-b / member-c"]
@@ -161,11 +162,12 @@ flowchart LR
 | **M2 robustness attack final-check** | modeling/coding | Core models survive systematic attack: identify threats (3-5 attack points, e.g. instrument validity / elasticity value / baseline dependence / stockout truncation / share stability) → alternative-method verification → uncertainty intervals → out-of-sample test → applicability boundary; attack list complete to pass |
 | **P2 coding final-check** | modeling/coding | All sub-problems have real results & figures; numbers traceable; reproducibility manifest complete; **all formal figures reviewed by vision sub-agent to PASS with records** |
 | **W1 evidence outline** | paper | Structure × evidence (fig/table/conclusion) mapping; no orphan conclusions; **model defense checklist included** (maps to M2 attack results) |
-| **W2 paper final-check** | paper | Formulas↔results consistent; no empty figs/tables; figures cover all sub-problems; numbering/citations continuous; references bidirectional; applicability boundary stated; **all figures reviewed by vision sub-agent to PASS with records**; independent review results merged |
+| **W2 paper final-check** | paper | Formulas↔results consistent; no empty figs/tables; figures cover all sub-problems; numbering/citations continuous; references bidirectional; applicability boundary stated; **all figures reviewed by vision sub-agent to PASS with records**; **rendered-PDF per-page review PASS with records** (table overflow / bad fonts / tiny fonts / layout / blank pages); independent review results merged |
 
-### Mandatory image review & independent review (cross-cutting)
+### Mandatory image review / rendered-PDF review / independent review (cross-cutting)
 
 - **Vision sub-agent (mandatory image-review gate)**: when the main model cannot read images, auto-probe a vision model whose `inputModalities` includes `image` (validated: `opencode-go/mimo-v2.5`; not hardcoded), dispatch a vision sub-agent via `workflow` to review every formal figure one-by-one (title/axes/legend/data/blank-overlap/claim support). **FAIL → fix per defects → re-review, loop until PASS**; each "FAIL reason → fix action → re-review result" is recorded. **Required in both P2 and W2: figures that skipped image review cannot pass the final-check gates.**
+- **Rendered-PDF page review (mandatory)**: after the final PDF is produced, render every page to an image (pdftoppm/PyMuPDF, 300 DPI) and have the vision sub-agent review **each page** — table overflow/truncation, abnormal fonts (mojibake/missing glyphs), unreadably small fonts, layout issues (overlap/misalignment/orphan lines), blank/duplicate pages, header/footer anomalies, blurry/cropped images, bad page breaks. FAIL → fix layout → re-render → re-review page by page, until all PASS; records kept. **Required in W2: papers that skipped rendered-PDF page review do not pass.** (More checks: see `self-review framework` / `LaTeX format spec` docs)
 - **Independent review model (adversarial)**: adversarial critique by a **different-vendor** model (recommended `kimi-coding/k3-256k`) — factuality (numbers traceable / no fabrication), consistency (definitions coherent), completeness (sub-problems covered), **model attack** (question instrument validity / parameter values / baseline dependence / stockout truncation / share stability), citation check (references exist & cited correctly). Must run before W2; fabricated numbers are blocked on the spot.
 
 ### Collaboration essentials
