@@ -30,6 +30,23 @@ This pack provides **2 role presets**:
 - **Vision sub-agent**: when the main model does not accept image input, dispatch a sub-agent on a **vision-capable model in the current environment** via `workflow` (auto-probe models whose `inputModalities` includes `image`; `opencode-go/mimo-v2.5` was validated on this host, but model names are not hardcoded)
 - **Independent-model review (adversarial)**: adversarial critique by a model from a **different vendor** — factuality / consistency / completeness / **model attack** / citation check; fabricated numbers are blocked on the spot (recommended: `kimi-coding/k3-256k` on this host)
 
+## Independent review model (adversarial)
+
+**Why**: a model that both produces and accepts has no critical distance — fabricated numbers, inconsistent definitions, and contradictions go unnoticed. Reviewing from a **different vendor's model** is like a second pair of eyes.
+
+**How**: dispatch a review sub-agent via `workflow`'s `agent(prompt, { provider, model })`, pinned to a model different from the producer (recommended `kimi-coding/k3-256k` on this host; do not hardcode — probe with the `llm` service for an available different-vendor model on another deployment).
+
+**Review dimensions**:
+- **Factuality**: can the headline numbers be traced to `results/` and the figures? Any fabrication?
+- **Consistency**: are definitions/symbols/conclusions coherent across summary, body, tables, and figures?
+- **Completeness**: do all sub-problems get covered?
+- **Model attack**: question each core model's assumptions (instrument validity / key parameter values / baseline dependence / stockout truncation / share stability) and verify the stated applicability boundary
+- **Citation check**: do references exist and are they cited correctly?
+
+**Blocked instance (2023 CUMCM-C run)**: a fabricated number "0.78" in a draft was flagged (not present in the data) → removed, replaced with the honest interval (0.7, 0.8).
+
+**Relation to M2**: M2 (modeling role) attacks the models at production time; independent review (paper role) re-checks the paper with a different model at delivery time — two lines of defense, front and back.
+
 ## Reusable global skill
 
 The repo ships a directory installable as a **global skill** (drop it under a DSH shared user skill root; any preset discovers it):
