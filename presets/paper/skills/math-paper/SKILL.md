@@ -91,7 +91,7 @@ git pull                     # 之后每次开始工作前拉取最新
 
 主模型可能不支持读图（`read_image` 拒读）。**论文的所有配图在 W2 终检前必须经视觉模型审核**（图是否清晰、空白/遮挡、坐标轴/图例是否缺失、是否与正文主张一致）。这是强制门禁，不是可选项：
 
-- **先探测可用的视觉模型**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 挑出 `inputModalities` 含 `image` 的模型作为识图模型。本环境已验证 `opencode-go / mimo-v2.5`，但换部署后须重新探测。
+- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 挑出 `inputModalities` 含 `image` 的模型作为识图模型。**优先选择经济型视觉模型（如 `opencode-go/mimo-v2.5`、`kimi-coding/kimi-for-coding`），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理；同一批图尽量一次派发批量审）。本环境已验证 `opencode-go / mimo-v2.5`；换部署后按"便宜视觉模型优先"原则重新探测。
 - 用 `workflow` 工具派发子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - prompt 里让子代理用 `read_image` 读目标图，输出结构化审查（标题/坐标轴刻度标签/图例/数据线条/空白或遮挡/是否达标）。
 - **逐张审核**：论文中的每一幅正式图都要单独过一遍审核（可一次派发多张，但每张都要有结论）。

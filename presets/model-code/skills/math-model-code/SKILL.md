@@ -102,7 +102,7 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 主模型可能不支持读图（`read_image` 会拒读）。**所有正式图在 P2 终检前必须经视觉模型审核**（是否空白、遮挡、坐标轴缺标签、是否支撑结论）。这是强制门禁，不是可选项：
 
-- **先探测可用的视觉模型**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。本环境已验证的候选是 `opencode-go / mimo-v2.5`（MiMo V2.5），但换部署后名字可能不同，务必重新探测。
+- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。**优先选择经济型视觉模型（如 `opencode-go/mimo-v2.5`、`kimi-coding/kimi-for-coding` 等），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理）。本环境已验证候选 `opencode-go / mimo-v2.5`；换部署后按"便宜视觉模型优先"原则重新探测。
 - 用 `workflow` 工具派发一个子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - 在 prompt 里告诉子代理用 `read_image` 工具读取目标图片路径，并要求它输出结构化审查（标题/坐标轴/图例/数据线条/空白或遮挡/是否达标）。
 - 例子（`provider`/`model` 用探测结果替换）：

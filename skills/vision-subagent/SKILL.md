@@ -30,7 +30,13 @@ const vision = /* inputModalities 含 'image' 的 {provider, model} */
 await agent(prompt, { provider: vision.provider, model: vision.model })
 ```
 
-已验证候选（示例）：`opencode-go/mimo-v2.5`、`kimi-coding/k3`、`kimi-coding/k3-256k`（均 text+image）。
+**成本优先（重要）**：识图/看图是高频、轻量任务，**优先选择便宜的经济型视觉模型，不要使用贵的大模型**。具体原则：
+- **首选**：`opencode-go/mimo-v2.5`、`kimi-coding/kimi-for-coding`（K2.7 Code）、`kimi-coding/kimi-for-coding-highspeed` 等经济型视觉模型（均 text+image）。
+- **避免**：`kimi-coding/k3`、`k3-256k` 这类旗舰/大上下文模型——识图不需要它们的强推理与长上下文，成本不划算。除非便宜模型全部不可用且任务确需更强能力，才考虑它们。
+- 换部署后先探测：按"便宜视觉模型优先 → 经济型 → 旗舰兜底"的顺序选。
+- 同一批图片审查应尽量**一次性派发**（一次 workflow 调用审多张），减少调用次数与成本。
+
+已验证候选（示例）：`opencode-go/mimo-v2.5`、`kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding-highspeed`（均 text+image，经济型）。
 
 ## 用法模板
 
