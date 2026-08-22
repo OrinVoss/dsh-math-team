@@ -101,48 +101,78 @@ Per-role kickoff prompt templates: see `docs/team-collaboration.md`.
 
 ## Full workflow (two presets + team collaboration)
 
+### Detailed flowchart
+
 ```mermaid
-flowchart TB
-    subgraph team["Team (3 people)"]
-        A1["Member A / B<br/>model-code preset<br/>(modeling + coding)"]
-        C1["Member C<br/>paper preset<br/>(paper)"]
+flowchart LR
+    subgraph team["Team (3 people · 3 independent workspaces)"]
+        direction TB
+        A["Member A (model-code preset)"]
+        B["Member B (model-code preset)"]
+        C["Member C (paper preset)"]
     end
 
-    subgraph modelcode["Modeling & coding flow (model-code)"]
-        M1["① Modeling phase<br/>read problem · split sub-problems · choose models<br/>outputs: analysis report · term table"]
-        P1["② Minimal runnable<br/><b>M1 final-check → P1</b>"]
-        M2["③ M2 robustness attack final-check<br/>attack model · alternative method · intervals · out-of-sample · boundary"]
-        P2["④ P2 coding final-check<br/>real results · reproducibility manifest · <b>mandatory image review</b>"]
-        A2["Outputs: results/ · figures/ · reproducibility manifest.json"]
-        M1 --> P1 --> M2 --> P2 --> A2
+    subgraph mc["📐 Modeling & coding role (model-code)"]
+        direction TB
+        S1["① Modeling phase<br/>read problem → check attachments → split sub-problems<br/>→ choose models → design solve & verify plan"]
+        G1["M1 modeling final-check<br/>requirements covered?<br/>sub-problems complete? correct criteria?"]
+        D1["Deliver: problem analysis report.md<br/>term table.md"]
+        S2["② Coding kickoff<br/>data prep (cleaning/returns/outliers)<br/>→ minimal runnable code → real run"]
+        G2["P1 minimal runnable<br/>real results produced?"]
+        S3["③ M2 robustness attack final-check<br/>identify attack points → alternative methods → intervals<br/>→ out-of-sample test → applicability boundary"]
+        G3["M2 pass criteria<br/>attack list/alt methods/intervals<br/>/out-of-sample/boundary all present"]
+        S4["④ Full-scale compute & figures<br/>3 figure types (raw/process/result)<br/>≥3 each covering all sub-problems"]
+        S5["⑤ Figure QA<br/>vision sub-agent one-by-one review (mandatory)"]
+        G4["P2 coding final-check<br/>real results · complete reproducibility manifest<br/>figures skipped image review → fail"]
+        D2["Deliver: results/ tables + reproducibility manifest.json<br/>figures/ 3 types"]
+        S1 --> G1 --> D1 --> S2 --> G2 --> S3 --> G3 --> S4 --> S5 --> G4 --> D2
     end
 
-    subgraph paper["Paper flow (paper)"]
-        W1["⑤ W1 evidence outline<br/>incl. model defense checklist (maps to M2)"]
-        SR["⑥ Evidence search & verification"]
-        W2["⑦ W2 paper final-check<br/>number traceability · numbering/citations · applicability boundary · <b>mandatory image review</b>"]
-        OUT["Deliver: final paper.docx/pdf · review record · AI-use disclosure"]
-        W1 --> SR --> W2 --> OUT
+    subgraph pp["📄 Paper role (paper)"]
+        direction TB
+        T1["① Pull A/B deliverables<br/>git pull member-a/b"]
+        T2["② Build evidence base<br/>read analysis report/results/figures<br/>per-sub-problem evidence list + gap log"]
+        T3["③ Evidence search & verify<br/>multi-source search → dedup → cross-check citations"]
+        T4["④ W1 evidence outline<br/>structure × evidence mapping<br/>+ model defense checklist (maps to M2)"]
+        G5["W1 pass criteria<br/>evidence per chapter · no orphan conclusions<br/>defense checklist complete"]
+        T5["⑤ Write paper<br/>Word (OMML) / LaTeX (optional)<br/>official template adaptation"]
+        T6["⑥ Figure QA<br/>vision sub-agent one-by-one review (mandatory)"]
+        T7["⑦ Independent review<br/>different-vendor adversarial review<br/>(kimi-coding/k3-256k)"]
+        G6["W2 paper final-check<br/>formulas↔results · no empty fig/table<br/>numbering/citations continuous · boundary stated<br/>figure-review records · independent review PASS"]
+        D3["Deliver: final paper.docx/pdf<br/>review record.md · code appendix · AI-use disclosure"]
+        T1 --> T2 --> T3 --> T4 --> G5 --> T5 --> T6 --> T7 --> G6 --> D3
     end
 
-    subgraph global["Cross-cutting capabilities"]
-        VISION["🖼️ Vision sub-agent (mandatory image-review gate)<br/>one-by-one review → FAIL → fix → re-review → PASS"]
-        REVIEW["⚔️ Independent review model (adversarial)<br/>different vendor · factuality/consistency/completeness/model attack/citations"]
-    end
-
-    A2 -->|"git push member-a/b"| REPO["Git repo<br/>member-a · member-b · member-c"]
-    REPO -->|"git pull handoff"| W1
-    VISION -.-> P2
-    VISION -.-> W2
-    REVIEW -.-> W2
+    D2 -->|"git add member-a/b<br/>commit · push"| REPO["Git repo<br/>member-a / member-b / member-c"]
+    REPO -->|"git pull (read-only others)"| T1
+    V1["🖼️ Vision sub-agent (global skill)<br/>probe vision model → read_image<br/>FAIL → fix → re-review → PASS"]
+    V2["⚔️ Independent review model<br/>factuality/consistency/completeness<br/>model attack/citation check"]
+    V1 -.-> S5
+    V1 -.-> T6
+    V2 -.-> T7
 ```
 
-**How to read it**:
-- **Left column (model-code)**: members A/B each run ①→④ independently, push modeling+coding deliverables to their own member folder
-- **Right column (paper)**: member C pulls A & B's deliverables, then runs ⑤→⑦ to produce the paper
-- **Gate chain**: M1 → P1 → M2 → P2 (modeling/coding); W1 → evidence search → W2 (paper)
-- **Cross-cutting**: vision sub-agent enforces **mandatory image review on all formal figures** (gated in both P2 and W2); independent review model adversarially reviews the paper (gated in W2)
-- **No interference**: each person commits only their own member-* folder
+### Gate check details
+
+| Gate | Role | What it checks |
+|---|---|---|
+| **M1 modeling final-check** | modeling/coding | All problem requirements have a model/plan; no sub-problem missed; constraints & criteria understood correctly |
+| **P1 minimal runnable** | modeling/coding | Minimal code runs before full-scale compute and produces real results |
+| **M2 robustness attack final-check** | modeling/coding | Core models survive systematic attack: identify threats (3-5 attack points, e.g. instrument validity / elasticity value / baseline dependence / stockout truncation / share stability) → alternative-method verification → uncertainty intervals → out-of-sample test → applicability boundary; attack list complete to pass |
+| **P2 coding final-check** | modeling/coding | All sub-problems have real results & figures; numbers traceable; reproducibility manifest complete; **all formal figures reviewed by vision sub-agent to PASS with records** |
+| **W1 evidence outline** | paper | Structure × evidence (fig/table/conclusion) mapping; no orphan conclusions; **model defense checklist included** (maps to M2 attack results) |
+| **W2 paper final-check** | paper | Formulas↔results consistent; no empty figs/tables; figures cover all sub-problems; numbering/citations continuous; references bidirectional; applicability boundary stated; **all figures reviewed by vision sub-agent to PASS with records**; independent review results merged |
+
+### Mandatory image review & independent review (cross-cutting)
+
+- **Vision sub-agent (mandatory image-review gate)**: when the main model cannot read images, auto-probe a vision model whose `inputModalities` includes `image` (validated: `opencode-go/mimo-v2.5`; not hardcoded), dispatch a vision sub-agent via `workflow` to review every formal figure one-by-one (title/axes/legend/data/blank-overlap/claim support). **FAIL → fix per defects → re-review, loop until PASS**; each "FAIL reason → fix action → re-review result" is recorded. **Required in both P2 and W2: figures that skipped image review cannot pass the final-check gates.**
+- **Independent review model (adversarial)**: adversarial critique by a **different-vendor** model (recommended `kimi-coding/k3-256k`) — factuality (numbers traceable / no fabrication), consistency (definitions coherent), completeness (sub-problems covered), **model attack** (question instrument validity / parameter values / baseline dependence / stockout truncation / share stability), citation check (references exist & cited correctly). Must run before W2; fabricated numbers are blocked on the spot.
+
+### Collaboration essentials
+
+- **3 independent workspaces + 1 Git repo + 3 folders** (member-a/b/c); each commits only their own folder — no interference
+- Deliverable contract: modeling/coding 6 items (analysis report / term table / scripts / results / figures / reproducibility manifest); paper 4 items (evidence outline / paper / review record / AI-use disclosure)
+- Bounded iteration: max 2 fix rounds per review; when the budget is exhausted, output a decision memo — never infinite polishing
 
 ## Documentation
 
