@@ -3,6 +3,10 @@ name: mathodology-award-gates
 description: Use when running Mathodology award-workflow phase gates, judge panels, structured handoffs, figure QA, or rendered-PDF QA in a contest run.
 ---
 
+
+> **⚠️ 工具脚本/外部服务未随附**：本文档引用到参考仓库 `mathodology` 的**脚本与外部服务**（如 `.claude/skills/*/scripts/` 下的 lint_run.py / figqa.py / pdf_qa.sh / update-project.py 等脚本，以及 `search` MCP server / free-search-mcp / WebSearch 等外部服务）。本预设**仅随附方法论文档**，未包含这些脚本，也不保证外部服务已配置。遇到此类工具时：按正文描述的方法自行实现等价脚本，或在环境中另行接入对应工具/服务；**不要假设它们已经存在于本机**。方法规范与门禁思路本身仍然有效。
+
+
 # Mathodology Award Gates
 
 Canonical home for the runtime contracts of the Mathodology award workflow: the

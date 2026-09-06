@@ -232,7 +232,7 @@ Result of a full end-to-end run on the real **2023 CUMCM Problem C (Vegetable Pr
 The role methodology docs in this pack are distilled from (docs only; no scripts/tool sources are shipped):
 
 - [XiaoMaColtAI/math-modeling-skill](https://github.com/XiaoMaColtAI/math-modeling-skill) — 3-stage workflow (modeling/coding/paper), quality gates, algorithm library, scientific-viz spec, reproducibility manifest. **Synced to v1.3.0** (incl. new Delivery & Deadline Protocol, figure contract, per-role doc updates; upstream's own DSH preset pack `dsh-plugin/math-modeling-agent` is NOT merged — we keep our own dual-role collaboration orchestration).
-- [sweetcornna/mathodology](https://github.com/sweetcornna/mathodology) — award-grade review gates (blind judging / bounded iteration), evidence search, full workflow methodology
+- [sweetcornna/mathodology](https://github.com/sweetcornna/mathodology) — award-grade review gates (blind judging / bounded iteration), evidence search, full workflow methodology. **Synced to latest** (incl. paper_graph prior-art/retraction check, two-level category routing updates in evidence search)
 
 ## License
 
