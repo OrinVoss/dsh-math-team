@@ -96,7 +96,7 @@ setup_style(journal='general', lang='zh', serif_for_zh=True)   # 中文宋体混
 
 `SciencePlots` 装了自动用，没装回退到内置预设。
 
-**MATLAB**：将 `ROLE_ROOT/scripts/apply_publication_style.m` 复制到 `PROJECT_ROOT/utils/` 后调用。
+**MATLAB**：将 `references/roles/编程手/scripts/apply_publication_style.m` 复制到 `PROJECT_ROOT/utils/` 后调用。
 
 ### 第 6 步：绘制
 

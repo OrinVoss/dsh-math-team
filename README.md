@@ -234,7 +234,7 @@ flowchart LR
 
 本包的岗位方法论文档整理自（仅文档，脚本/工具源码未搬运）：
 
-- [XiaoMaColtAI/math-modeling-skill](https://github.com/XiaoMaColtAI/math-modeling-skill) — 三阶段工作流（建模/编程/论文）、质量门禁、算法资料、科学可视化规范、复现清单
+- [XiaoMaColtAI/math-modeling-skill](https://github.com/XiaoMaColtAI/math-modeling-skill) — 三阶段工作流（建模/编程/论文）、质量门禁、算法资料、科学可视化规范、复现清单。**已同步至 v1.3.0**（含新增《交付与截止时间协议》、图表契约 figure contract、各角色文档更新；上游 v1.3.0 自带的官方 DSH 预设包 `dsh-plugin/math-modeling-agent` 未并入——我们保留自己的双岗协同编排）。
 - [sweetcornna/mathodology](https://github.com/sweetcornna/mathodology) — 获奖评审门禁（盲评/有界迭代）、证据检索、完整工作流方法论
 
 ## License

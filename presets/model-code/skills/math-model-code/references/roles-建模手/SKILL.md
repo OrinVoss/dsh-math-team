@@ -41,6 +41,7 @@ description: 数学建模的题目理解、模型选择和算法设计阶段。�
 | 情形 | 读取 |
 |---|---|
 | 开始分析 | `references/工作流程.md` |
+| 写分析报告前确定合同 | `references/前置合同.md` |
 | 设计模型组合 | `references/建模设计理论.md` |
 | 需要常见问题模式 | `references/常见模式.md` |
 | 需要具体算法 | `../../../references/算法索引.md`，再读取匹配的 `../../../assets/*.md` |
