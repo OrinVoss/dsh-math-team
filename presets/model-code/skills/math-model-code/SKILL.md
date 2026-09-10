@@ -119,7 +119,7 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 主模型可能不支持读图（`read_image` 会拒读）。**所有正式图在 P2 终检前必须经视觉模型审核**（是否空白、遮挡、坐标轴缺标签、是否支撑结论）。这是强制门禁，不是可选项：
 
-- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。**优先选择经济型视觉模型（如 `kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding` 等），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理）。本环境已验证候选 `kimi-coding / kimi-for-coding`；换部署后按"便宜视觉模型优先"原则重新探测。
+- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。**优先选择经济型视觉模型（如 `kimi-coding/kimi-for-coding` 等），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理）。本环境已验证候选 `kimi-coding / kimi-for-coding`；换部署后按"便宜视觉模型优先"原则重新探测。
 - 用 `workflow` 工具派发一个子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - 在 prompt 里告诉子代理用 `read_image` 工具读取目标图片路径，并要求它输出结构化审查（标题/坐标轴/图例/数据线条/空白或遮挡/是否达标）。
 - 例子（`provider`/`model` 用探测结果替换）：
@@ -174,6 +174,6 @@ git pull                            # 开始时拉取最新；只读他人文件
 ## 完成判定
 
 - 阶段一/二的固定交付物齐全且写入你的 `member-*` 文件夹。
-- 通过 M1、P1、P2 门禁并完成复现验证。
+- 通过 **M1、P1、M2、P2** 全部门禁（含 **图表强制图审 PASS**、**≥2 个不同模型的独立审查通过**）并完成复现验证。
 - 已 push 到 Gitee，且未改动他人文件夹。
-- 若独立评审未执行（无评审方/子代理），如实标注"独立验收未完成"，不宣称完整完成。
+- 若独立评审/图审未执行（无评审方/子代理/视觉模型），如实标注"独立验收未完成"，不宣称完整完成。
