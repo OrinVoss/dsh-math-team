@@ -93,6 +93,7 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 - **编程模型怎么选**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 探测，挑**代码/工程能力最强**的模型。**本环境为 `deepseek-official/deepseek-flash`（DeepSeek V4.1 Flash）**——编程强，且在子代理白名单内。
 - **怎么派**：用 `workflow` 的 `agent(prompt, { provider, model })` 指定该编程模型；prompt 里写清**模型规格（引用题目分析报告）、输入数据路径、产出要求、运行环境**。
+- **⚠️ 必须用 `workflow` 派发，不能用 `subagent`/`subagent_fork`**：后两个工具的入参只有 `description`/`prompt`/`run_in_background`，**不暴露 `provider`/`model`**，只能继承父模型——用它们派发就**无法指定 V4.1 Flash**，会退化成"只有一个模型"。要指定模型，一律走 `workflow` 的 `agent(prompt, { provider, model })`。
 - **职责边界**：
   - **编程子代理**：写脚本、跑通、出结果表与图、按报错修 bug、给出复现命令；
   - **主模型**：负责数学正确性与口径判断、验收子代理产出、补齐/修正规格；**不把知识与建模判断外包**。
@@ -165,6 +166,7 @@ git pull                            # 开始时拉取最新；只读他人文件
   - 模型 A（偏**知识、逻辑、口径、结论合理性**与常识判断）：审结论是否站得住、有无知识性错误；
   - 模型 B（偏**代码、复现、实现正确性与数值可追溯**）：审代码可运行、结果可复现、数字可溯源。
 - 用 `workflow` 派发**多次**审查子代理，分别在 `agent(prompt, { provider, model })` 里指定不同模型；**每份结论都要记录**（各自 PASS/FAIL 与问题清单）。
+- **⚠️ 必须用 `workflow` 派发，不能用 `subagent`/`subagent_fork`**：后两个工具的入参只有 `description`/`prompt`/`run_in_background`，**不暴露 `provider`/`model`**，只能继承父模型——用它们派发就**无法指定其他模型**，会退化成"只有一个模型"。要指定模型，一律走 `workflow` 的 `agent(prompt, { provider, model })`。
 - **模型名不硬编码**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 探测本环境可用模型，按能力侧重挑两个。**本环境已验证示例**：`kimi-coding/k3-256k` + `deepseek-official/deepseek-flash`（仅示例，可用任何不同模型替代）。
 - **审查 prompt 要求**（结构化，每次都查）：
   - 事实性：结论是否有真实结果/表/图支撑？有无编造的数值或来源？

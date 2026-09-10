@@ -145,6 +145,7 @@ uv run --with pypdf --with pymupdf python <SKILL_ROOT>/scripts/read_pdf.py <文�
   - 模型 A（偏**知识、逻辑、引用、口径、结论与适用边界**）：审知识性错误、引用真实性、结论是否站得住；
   - 模型 B（偏**代码/附录、复现、格式实现与数值可追溯**）：审代码可复现、格式实现正确、数字可溯源。
 - 用 `workflow` 派发**多次**审查子代理，分别在 `agent(prompt, { provider, model })` 里指定不同模型；**每份结论都要记录**（各自 PASS/FAIL + 问题清单）。
+- **⚠️ 必须用 `workflow` 派发，不能用 `subagent`/`subagent_fork`**：后两个工具的入参只有 `description`/`prompt`/`run_in_background`，**不暴露 `provider`/`model`**，只能继承父模型——用它们派发就**无法指定 V4.1 Flash**，会退化成"只有一个模型"。要指定模型，一律走 `workflow` 的 `agent(prompt, { provider, model })`。
 - **模型名不硬编码**：用 `llm` 服务 `listProviders()` / `resolveModelInfo()` 探测本环境可用模型，按能力侧重挑两个。**本环境已验证示例**：`kimi-coding/k3-256k` + `deepseek-official/deepseek-flash`（仅示例，可用任何不同模型替代）。
 - **审查 prompt 要求**（结构化，每次都查）：
   - 事实性：摘要/正文的 headline 数值能否溯源到 `results/` 与图表？有无编造？
