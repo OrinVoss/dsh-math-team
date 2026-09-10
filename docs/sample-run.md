@@ -75,7 +75,7 @@ Proposed 7 types of data (next-day actual purchase price, true demand, promo/dis
 4. **Numbering continuity**: found and fixed an appendix table missing `\label` that caused a table-number jump 10→12
 5. **Figure round**: vision sub-agent flagged Figure 2 as visually misleading (a clipped histogram masked the "log-normal beats gamma" conclusion); redrawn as dual panels and re-validated PASS
 
-> Note: the reviewing main model itself cannot read images (`deepseek-v4-flash` has no image input), so **visual QA of all 18 figures was performed by the `opencode-go/mimo-v2.5` vision sub-agent**, and this was explicitly disclosed in the paper.
+> Note: the reviewing main model itself cannot read images (`deepseek-v4-flash` has no image input), so **visual QA of all 18 figures was performed by the `opencode-go/mimo-v2.5` vision sub-agent** (that provider has since been removed from this host; the current economy vision model is `kimi-coding/kimi-for-coding`)**, and this was explicitly disclosed in the paper.
 
 ## 5. What this plugin pack contributed
 

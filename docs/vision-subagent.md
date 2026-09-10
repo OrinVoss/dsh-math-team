@@ -33,12 +33,12 @@ await agent(
 
 ## Validated example (this host)
 
-On the deployment hosting this preset, `opencode-go / mimo-v2.5` (MiMo V2.5, `inputModalities` `text`+`image`, 1M context) was used and validated as the vision model:
+On the deployment hosting this preset, `kimi-coding / kimi-for-coding` (MiMo V2.5, `inputModalities` `text`+`image`, 1M context) was used and validated as the vision model:
 - The sub-agent successfully read a PNG image
 - It returned a structured review: title, chart type, axes, data lines, legend, and defects (e.g. "axis missing tick labels")
 - The result can be used as evidence for chart QA / paper figure verification / review gates
 
-> ⚠️ This is **one validated candidate**, not a name every deployment uses. On a different environment, re-probe as described above; if `mimo-v2.5` is unavailable, use any other model whose `inputModalities` includes `image`.
+> ⚠️ This is **one validated candidate**, not a name every deployment uses. On a different environment, re-probe as described above; on this host the economy vision model is `kimi-coding/kimi-for-coding`; if it is unavailable, use any other model whose `inputModalities` includes `image`.
 
 ## Notes
 

@@ -37,7 +37,9 @@ git pull                     # 之后每次开始工作前拉取最新
 
 **怎么探测**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 列出本环境可用模型及能力，再按上表挑选。某角色找不到合适模型时如实标注受限。
 
-> **本环境已验证示例**（仅供参考，非强制）：主模型 Kimi K3 · 编程 DeepSeek V4.1 Flash · 审查 Kimi K3-256K + DeepSeek V4.1 Flash 双模型各审一遍 · 识图 mimo-v2.5。**可用任何满足上表能力的模型替代**。
+> **本环境已验证示例**（仅供参考，非强制）：主模型 Kimi K3 · 编程 DeepSeek V4.1 Flash · 审查 Kimi K3-256K + DeepSeek V4.1 Flash 双模型各审一遍 · 识图 Kimi K2.7 Code（`kimi-coding/kimi-for-coding`）。**可用任何满足上表能力的模型替代**。
+
+- **⚠️ 子代理模型白名单**：本环境的子代理只能用 `subagent-model-selection.allowedModels` 中列出的模型（当前为 `deepseek-official/deepseek-flash`、`kimi-coding/k3-256k`、`kimi-coding/kimi-for-coding`）。派发子代理时若指定白名单外的模型会**失败**；请从白名单中按能力挑选，或让使用者把目标模型加入白名单。
 
 ## 我的职责
 
@@ -108,7 +110,7 @@ git pull                     # 之后每次开始工作前拉取最新
 
 主模型可能不支持读图（`read_image` 拒读）。**论文的所有配图在 W2 终检前必须经视觉模型审核**（图是否清晰、空白/遮挡、坐标轴/图例是否缺失、是否与正文主张一致）。这是强制门禁，不是可选项：
 
-- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 挑出 `inputModalities` 含 `image` 的模型作为识图模型。**优先选择经济型视觉模型（如 `opencode-go/mimo-v2.5`、`kimi-coding/kimi-for-coding`），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理；同一批图尽量一次派发批量审）。本环境已验证 `opencode-go / mimo-v2.5`；换部署后按"便宜视觉模型优先"原则重新探测。
+- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 挑出 `inputModalities` 含 `image` 的模型作为识图模型。**优先选择经济型视觉模型（如 `kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding`），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理；同一批图尽量一次派发批量审）。本环境已验证 `kimi-coding / kimi-for-coding`；换部署后按"便宜视觉模型优先"原则重新探测。
 - 用 `workflow` 工具派发子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - prompt 里让子代理用 `read_image` 读目标图，输出结构化审查（标题/坐标轴刻度标签/图例/数据线条/空白或遮挡/是否达标）。
 - **逐张审核**：论文中的每一幅正式图都要单独过一遍审核（可一次派发多张，但每张都要有结论）。
@@ -124,7 +126,7 @@ git pull                     # 之后每次开始工作前拉取最新
   - 模型 A（偏**知识、逻辑、引用、口径、结论与适用边界**）：审知识性错误、引用真实性、结论是否站得住；
   - 模型 B（偏**代码/附录、复现、格式实现与数值可追溯**）：审代码可复现、格式实现正确、数字可溯源。
 - 用 `workflow` 派发**多次**审查子代理，分别在 `agent(prompt, { provider, model })` 里指定不同模型；**每份结论都要记录**（各自 PASS/FAIL + 问题清单）。
-- **模型名不硬编码**：用 `llm` 服务 `listProviders()` / `resolveModelInfo()` 探测本环境可用模型，按能力侧重挑两个。**本环境已验证示例**：`kimi-coding/k3-256k` + `opencode-go/deepseek-v4-flash`（仅示例，可用任何不同模型替代）。
+- **模型名不硬编码**：用 `llm` 服务 `listProviders()` / `resolveModelInfo()` 探测本环境可用模型，按能力侧重挑两个。**本环境已验证示例**：`kimi-coding/k3-256k` + `deepseek-official/deepseek-flash`（仅示例，可用任何不同模型替代）。
 - **审查 prompt 要求**（结构化，每次都查）：
   - 事实性：摘要/正文的 headline 数值能否溯源到 `results/` 与图表？有无编造？
   - 一致性：口径/符号/结论在摘要、正文、表、图之间是否自洽？

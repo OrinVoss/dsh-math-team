@@ -73,7 +73,9 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 **怎么探测**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 列出本环境可用模型及能力（`inputModalities` 等），再按上表挑选。某角色在环境中找不到合适模型时，如实标注受限，不要假装具备。
 
-> **本环境已验证示例**（仅供参考，非强制）：主模型 Kimi K3（知识丰富、敏锐）· 编程 DeepSeek V4.1 Flash（编程强）· 审查 Kimi K3-256K + DeepSeek V4.1 Flash 双模型各审一遍 · 识图 mimo-v2.5。这只是"某环境的一种配置"，**你可以用任何满足上表能力的模型替代**。
+> **本环境已验证示例**（仅供参考，非强制）：主模型 Kimi K3（知识丰富、敏锐）· 编程 DeepSeek V4.1 Flash（编程强）· 审查 Kimi K3-256K + DeepSeek V4.1 Flash 双模型各审一遍 · 识图 Kimi K2.7 Code（`kimi-coding/kimi-for-coding`）。这只是"某环境的一种配置"，**你可以用任何满足上表能力的模型替代**。
+
+- **⚠️ 子代理模型白名单**：本环境的子代理只能用 `subagent-model-selection.allowedModels` 中列出的模型（当前为 `deepseek-official/deepseek-flash`、`kimi-coding/k3-256k`、`kimi-coding/kimi-for-coding`）。派发子代理时若指定白名单外的模型会**失败**；请从白名单中按能力挑选，或让使用者把目标模型加入白名单。
 
 ## 质量门禁（强制，顺序执行）
 
@@ -117,11 +119,11 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 主模型可能不支持读图（`read_image` 会拒读）。**所有正式图在 P2 终检前必须经视觉模型审核**（是否空白、遮挡、坐标轴缺标签、是否支撑结论）。这是强制门禁，不是可选项：
 
-- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。**优先选择经济型视觉模型（如 `opencode-go/mimo-v2.5`、`kimi-coding/kimi-for-coding` 等），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理）。本环境已验证候选 `opencode-go / mimo-v2.5`；换部署后按"便宜视觉模型优先"原则重新探测。
+- **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。**优先选择经济型视觉模型（如 `kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding` 等），避免使用 k3 等旗舰大模型做识图**（识图是高频轻量任务，不需要强推理）。本环境已验证候选 `kimi-coding / kimi-for-coding`；换部署后按"便宜视觉模型优先"原则重新探测。
 - 用 `workflow` 工具派发一个子代理，在 `agent(prompt, { provider: <探测到的provider>, model: <探测到的视觉model> })` 里指定该视觉模型。
 - 在 prompt 里告诉子代理用 `read_image` 工具读取目标图片路径，并要求它输出结构化审查（标题/坐标轴/图例/数据线条/空白或遮挡/是否达标）。
 - 例子（`provider`/`model` 用探测结果替换）：
-  `agent('用 read_image 读取 <图片路径>，审查图表：标题、坐标轴刻度/标签、图例、线条、是否有空白或遮挡，给出可改进项。', { provider: 'opencode-go', model: 'mimo-v2.5' })`
+  `agent('用 read_image 读取 <图片路径>，审查图表：标题、坐标轴刻度/标签、图例、线条、是否有空白或遮挡，给出可改进项。', { provider: 'kimi-coding', model: 'kimi-for-coding' })`
 - **逐张审核**：每一幅正式图都要单独过一遍审核（可一次派发多张，但每张都要有结论）。
 - 若探测不到任何 `image` 模型，则如实标记"此环境无视觉模型，视觉质检受限，未走图审的正式图需真人终审"，不要假装通过。
 - 视觉审查结果作为 P2 编程终检的**强制证据**：全部正式图审核有记录且最终 PASS。
@@ -135,7 +137,7 @@ git pull                            # 开始时拉取最新；只读他人文件
   - 模型 A（偏**知识、逻辑、口径、结论合理性**与常识判断）：审结论是否站得住、有无知识性错误；
   - 模型 B（偏**代码、复现、实现正确性与数值可追溯**）：审代码可运行、结果可复现、数字可溯源。
 - 用 `workflow` 派发**多次**审查子代理，分别在 `agent(prompt, { provider, model })` 里指定不同模型；**每份结论都要记录**（各自 PASS/FAIL 与问题清单）。
-- **模型名不硬编码**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 探测本环境可用模型，按能力侧重挑两个。**本环境已验证示例**：`kimi-coding/k3-256k` + `opencode-go/deepseek-v4-flash`（仅示例，可用任何不同模型替代）。
+- **模型名不硬编码**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 探测本环境可用模型，按能力侧重挑两个。**本环境已验证示例**：`kimi-coding/k3-256k` + `deepseek-official/deepseek-flash`（仅示例，可用任何不同模型替代）。
 - **审查 prompt 要求**（结构化，每次都查）：
   - 事实性：结论是否有真实结果/表/图支撑？有无编造的数值或来源？
   - 一致性：口径/符号/结论在报告、代码、结果、图之间是否自洽？
