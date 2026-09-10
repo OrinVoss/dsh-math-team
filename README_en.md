@@ -32,20 +32,22 @@ This pack provides **2 role presets**:
 
 ## Model division of labor
 
-Models are assigned by strength, covering each other's blind spots:
+Assign models by **capability complementarity** — **no specific model is required**. Configure per the table below using the models available in your environment (do not hardcode model names):
 
-| Role | Model | Use & rationale |
+| Role | Capability needed | How to choose |
 |---|---|---|
-| **Main model** | **Kimi K3** (`kimi-coding/k3`) | Primary: large, **rich world knowledge, high acuity** → problem understanding, modeling analysis, paper writing, knowledge judgment |
-| **Programming** | **DeepSeek V4.1 Flash** | **Strong coding**: write code, run results, compile/convert (dispatch a V4.1 Flash sub-agent via `workflow`); may have knowledge blind spots, so not a standalone knowledge authority |
-| **Review (both models review once each)** | **Kimi K3-256K** (`kimi-coding/k3-256k`) **+ DeepSeek V4.1 Flash** | Each reviews independently once — cross-covering blind spots: K3-256K on knowledge/logic/citations/definitions, V4.1 Flash on code/reproducibility/format |
-| Vision | Economy vision model (e.g. `opencode-go/mimo-v2.5`) | High-frequency lightweight task; cost-first |
+| **Main model** | Broad world knowledge, sharp judgment, strong reasoning | Pick the **most knowledgeable/reasoning-capable** model in your environment (problem understanding, modeling analysis, paper writing) |
+| **Programming** | Strong coding/engineering | Pick the **strongest coding** model (may differ from the main model); dispatch it via `workflow` to write code, run results, compile/convert |
+| **Review (≥2 different models, once each)** | Different vendor / different strength than the producer | **Pick at least two different models, each reviewing independently once**, cross-covering blind spots |
+| **Vision** | Accepts image input, cost-controlled | Prefer an **economy vision model** (high-frequency lightweight task) |
 
-Model names are not hardcoded — probe with the `llm` service's `listProviders()` / `resolveModelInfo()` on another deployment.
+**How to probe**: use the `llm` service's `listProviders()` / `resolveModelInfo()` to list available models and capabilities, then pick per the table above. If no suitable model exists for a role, state the limitation honestly.
 
-## Independent model review (both models review once each, adversarial)
+> **Validated example on this host** (reference only, not required): main Kimi K3 · programming DeepSeek V4.1 Flash · review Kimi K3-256K + DeepSeek V4.1 Flash (each once) · vision mimo-v2.5. **Any model meeting the capabilities above works.**
 
-**Why**: a model that both produces and accepts has no critical distance — fabricated numbers, inconsistent definitions, and contradictions go unnoticed. Having **two models of different vendors and different strengths each review once** cross-covers their blind spots — like two pairs of eyes.
+## Independent model review (multiple different models, each reviewing once, adversarial)
+
+**Why**: a model that both produces and accepts has no critical distance — fabricated numbers, inconsistent definitions, and contradictions go unnoticed. Having **multiple models of different vendors and strengths each review once** cross-covers their blind spots.
 
 **How**: dispatch **two** review sub-agents via `workflow`'s `agent(prompt, { provider, model })`, pinned respectively to **Kimi K3-256K** and **DeepSeek V4.1 Flash**; record both verdicts (PASS/FAIL + issue list), and any issue from either side must be fixed and re-reviewed under the re-review loop.
 
