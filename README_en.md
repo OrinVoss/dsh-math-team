@@ -28,15 +28,28 @@ This pack provides **2 role presets**:
 - **Quality gates**: Modeling final-check M1 / minimal runnable P1 / **robustness attack final-check M2** / coding final-check P2 / evidence outline W1 / paper final-check W2
 - **M2 robustness attack final-check**: systematically "attack" every core model — propose model → attack model → re-verify with an alternative method → add uncertainty → out-of-sample test → state the applicability boundary — to keep conclusions that cannot survive scrutiny out of the paper (with real 2023 CUMCM-C attack cases)
 - **Vision sub-agent (mandatory image-review gate)**: when the main model does not accept image input, dispatch a sub-agent on a **vision-capable model in the current environment** via `workflow` (auto-probe models whose `inputModalities` includes `image`; `opencode-go/mimo-v2.5` was validated on this host, but model names are not hardcoded). **Every formal figure must be reviewed one-by-one by the vision sub-agent to PASS with records before P2/W2**; on FAIL, a "fix → re-review" loop runs until PASS — figures that skipped image review cannot pass the final-check gates
-- **Independent-model review (adversarial)**: adversarial critique by a model from a **different vendor** — factuality / consistency / completeness / **model attack** / citation check; fabricated numbers are blocked on the spot (recommended: `kimi-coding/k3-256k` on this host)
+- **Independent-model review (both models review once each)**: **Kimi K3-256K + DeepSeek V4.1 Flash** each review independently once, cross-covering blind spots — factuality / consistency / completeness / **model attack** / citation check; fabricated numbers are blocked on the spot
 
-## Independent review model (adversarial)
+## Model division of labor
 
-**Why**: a model that both produces and accepts has no critical distance — fabricated numbers, inconsistent definitions, and contradictions go unnoticed. Reviewing from a **different vendor's model** is like a second pair of eyes.
+Models are assigned by strength, covering each other's blind spots:
 
-**How**: dispatch a review sub-agent via `workflow`'s `agent(prompt, { provider, model })`, pinned to a model different from the producer (recommended `kimi-coding/k3-256k` on this host; do not hardcode — probe with the `llm` service for an available different-vendor model on another deployment).
+| Role | Model | Use & rationale |
+|---|---|---|
+| **Main model** | **Kimi K3** (`kimi-coding/k3`) | Primary: large, **rich world knowledge, high acuity** → problem understanding, modeling analysis, paper writing, knowledge judgment |
+| **Programming** | **DeepSeek V4.1 Flash** | **Strong coding**: write code, run results, compile/convert (dispatch a V4.1 Flash sub-agent via `workflow`); may have knowledge blind spots, so not a standalone knowledge authority |
+| **Review (both models review once each)** | **Kimi K3-256K** (`kimi-coding/k3-256k`) **+ DeepSeek V4.1 Flash** | Each reviews independently once — cross-covering blind spots: K3-256K on knowledge/logic/citations/definitions, V4.1 Flash on code/reproducibility/format |
+| Vision | Economy vision model (e.g. `opencode-go/mimo-v2.5`) | High-frequency lightweight task; cost-first |
 
-**Review dimensions**:
+Model names are not hardcoded — probe with the `llm` service's `listProviders()` / `resolveModelInfo()` on another deployment.
+
+## Independent model review (both models review once each, adversarial)
+
+**Why**: a model that both produces and accepts has no critical distance — fabricated numbers, inconsistent definitions, and contradictions go unnoticed. Having **two models of different vendors and different strengths each review once** cross-covers their blind spots — like two pairs of eyes.
+
+**How**: dispatch **two** review sub-agents via `workflow`'s `agent(prompt, { provider, model })`, pinned respectively to **Kimi K3-256K** and **DeepSeek V4.1 Flash**; record both verdicts (PASS/FAIL + issue list), and any issue from either side must be fixed and re-reviewed under the re-review loop.
+
+**Review dimensions** (both runs):
 - **Factuality**: can the headline numbers be traced to `results/` and the figures? Any fabrication?
 - **Consistency**: are definitions/symbols/conclusions coherent across summary, body, tables, and figures?
 - **Completeness**: do all sub-problems get covered?
@@ -45,7 +58,7 @@ This pack provides **2 role presets**:
 
 **Blocked instance (2023 CUMCM-C run)**: a fabricated number "0.78" in a draft was flagged (not present in the data) → removed, replaced with the honest interval (0.7, 0.8).
 
-**Relation to M2**: M2 (modeling role) attacks the models at production time; independent review (paper role) re-checks the paper with a different model at delivery time — two lines of defense, front and back.
+**Relation to M2**: M2 (modeling role) attacks the models at production time; independent review (paper role) re-checks the paper with both models at delivery time — two lines of defense, front and back.
 
 ## Reusable global skill
 
@@ -138,7 +151,7 @@ flowchart LR
         T5["⑤ Write paper<br/>Word (OMML) / LaTeX (optional)<br/>official template adaptation → render PDF"]
         T6["⑥ Figure QA<br/>vision sub-agent one-by-one review (mandatory)"]
         T6b["⑦ Rendered-PDF page review (mandatory)<br/>each page → image → vision sub-agent per-page<br/>table overflow / bad fonts / tiny fonts / layout / blank pages"]
-        T7["⑧ Independent review<br/>different-vendor adversarial review<br/>(kimi-coding/k3-256k)"]
+        T7["⑧ Independent review<br/>both models review once each<br/>(K3-256K + V4.1 Flash)"]
         G6["W2 paper final-check<br/>formulas↔results · no empty fig/table<br/>numbering/citations continuous · boundary stated<br/>figure-review records · rendered-PDF review PASS · independent review PASS"]
         D3["Deliver: final paper.docx/pdf<br/>review record.md · code appendix · AI-use disclosure"]
         T1 --> T2 --> T3 --> T4 --> G5 --> T5 --> T6 --> T6b --> T7 --> G6 --> D3
@@ -168,7 +181,7 @@ flowchart LR
 
 - **Vision sub-agent (mandatory image-review gate)**: when the main model cannot read images, auto-probe a vision model whose `inputModalities` includes `image` (validated: `opencode-go/mimo-v2.5`; not hardcoded), dispatch a vision sub-agent via `workflow` to review every formal figure one-by-one (title/axes/legend/data/blank-overlap/claim support). **FAIL → fix per defects → re-review, loop until PASS**; each "FAIL reason → fix action → re-review result" is recorded. **Required in both P2 and W2: figures that skipped image review cannot pass the final-check gates.**
 - **Rendered-PDF page review (mandatory)**: after the final PDF is produced, render every page to an image (pdftoppm/PyMuPDF, 300 DPI) and have the vision sub-agent review **each page** — table overflow/truncation, abnormal fonts (mojibake/missing glyphs), unreadably small fonts, layout issues (overlap/misalignment/orphan lines), blank/duplicate pages, header/footer anomalies, blurry/cropped images, bad page breaks. FAIL → fix layout → re-render → re-review page by page, until all PASS; records kept. **Required in W2: papers that skipped rendered-PDF page review do not pass.** (More checks: see `self-review framework` / `LaTeX format spec` docs)
-- **Independent review model (adversarial)**: adversarial critique by a **different-vendor** model (recommended `kimi-coding/k3-256k`) — factuality (numbers traceable / no fabrication), consistency (definitions coherent), completeness (sub-problems covered), **model attack** (question instrument validity / parameter values / baseline dependence / stockout truncation / share stability), citation check (references exist & cited correctly). Must run before W2; fabricated numbers are blocked on the spot.
+- **Independent-model review (both models review once each)**: adversarial critique by **Kimi K3-256K + DeepSeek V4.1 Flash**, each reviewing independently once — factuality (numbers traceable / no fabrication), consistency (definitions coherent), completeness (sub-problems covered), **model attack** (question instrument validity / parameter values / baseline dependence / stockout truncation / share stability), citation check (references exist & cited correctly). Must run before W2; fabricated numbers are blocked on the spot.
 
 ### Collaboration essentials
 
