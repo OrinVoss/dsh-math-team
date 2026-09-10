@@ -139,6 +139,40 @@ subagent-model-selection:
 - **Still use a vision sub-agent when**: ① the main model cannot read images; ② you want an independent/isolated visual verdict, or a cheaper vision model;
 - **PDF problems/templates still need scripted text extraction** (no native PDF tool on the agent side today).
 
+### PDF text extraction (verified working)
+
+The local `python` comes from msys64 and has **no pip**; the reliable route is `uv`, which installs the dependency into a throwaway environment.
+
+**Step 1: write `extract_pdf.py`**
+
+```python
+from pypdf import PdfReader
+import sys
+
+src, dst = sys.argv[1], sys.argv[2]
+reader = PdfReader(src)
+parts = []
+for i, page in enumerate(reader.pages, 1):
+    parts.append(f"===== page {i} =====")
+    parts.append(page.extract_text() or "(no text)")
+with open(dst, "w", encoding="utf-8") as fh:
+    fh.write("\n".join(parts))
+print(f"extracted {len(reader.pages)} pages -> {dst}")
+```
+
+**Step 2: run it through `uv`** (temporarily installs `pypdf`, leaves the system untouched)
+
+```powershell
+uv run --with pypdf python extract_pdf.py "problem.pdf" "problem.txt"
+```
+
+**Step 3**: read the generated `problem.txt` with the `read` tool.
+
+**Alternatives**:
+- If your system Python has pip: `pip install pypdf` and run the same script;
+- For tables/layout, use `pdfplumber` instead (`uv run --with pdfplumber ...`);
+- If the PDF was uploaded through the Web UI, try the file tool directly (availability depends on the deployment).
+
 ## 7. Takeaways
 
 1. **"Can it read images" depends on the declaration, not the model's reputation** — verify with `resolveModelInfo` instead of guessing;
