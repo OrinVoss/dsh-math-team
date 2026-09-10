@@ -51,7 +51,7 @@ Assign models by **capability complementarity** — **no specific model is requi
 
 **How to probe**: use the `llm` service's `listProviders()` / `resolveModelInfo()` to list available models and capabilities, then pick per the table above. If no suitable model exists for a role, state the limitation honestly.
 
-> **Validated example on this host** (reference only, not required): main Kimi K3 · programming DeepSeek V4.1 Flash · review Kimi K3-256K + DeepSeek V4.1 Flash (each once) · vision Kimi K2.7 Code (`kimi-coding/kimi-for-coding`). **Any model meeting the capabilities above works.**
+> **Validated example on this host** (reference only, not required): main Kimi K3 · programming DeepSeek V4.1 Flash · review Kimi K3-256K + DeepSeek V4.1 Flash (each once) · vision DeepSeek V4.1 Flash (`deepseek-official/deepseek-flash`) or Kimi K2.7 Code (`kimi-coding/kimi-for-coding`). **Any model meeting the capabilities above works.**
 
 ## Independent model review (multiple different models, each reviewing once, adversarial)
 

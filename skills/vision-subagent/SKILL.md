@@ -31,12 +31,14 @@ await agent(prompt, { provider: vision.provider, model: vision.model })
 ```
 
 **成本优先（重要）**：识图/看图是高频、轻量任务，**优先选择便宜的经济型视觉模型，不要使用贵的大模型**。具体原则：
-- **首选**：`kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding`（K2.7 Code）、`kimi-coding/kimi-for-coding-highspeed` 等经济型视觉模型（均 text+image）。
+- **首选**：`deepseek-official/deepseek-flash`（DeepSeek V4.1 Flash，官方"快·高效·经济"定位，text+image）、`kimi-coding/kimi-for-coding`（K2.7 Code）、`kimi-coding/kimi-for-coding-highspeed` 等经济型视觉模型。
 - **避免**：`kimi-coding/k3`、`k3-256k` 这类旗舰/大上下文模型——识图不需要它们的强推理与长上下文，成本不划算。除非便宜模型全部不可用且任务确需更强能力，才考虑它们。
 - 换部署后先探测：按"便宜视觉模型优先 → 经济型 → 旗舰兜底"的顺序选。
 - 同一批图片审查应尽量**一次性派发**（一次 workflow 调用审多张），减少调用次数与成本。
 
-已验证候选（示例）：`kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding-highspeed`（均 text+image，经济型）。
+已验证候选（示例）：`deepseek-official/deepseek-flash`、`kimi-coding/kimi-for-coding`、`kimi-coding/kimi-for-coding-highspeed`（均 text+image，经济型）。
+
+> ⚠️ **图像能力靠配置声明**：模型的 `inputModalities` 在配置里默认是 `["text"]`。若某模型实际支持读图却被拒（`read_image` 报 "does not declare image input"），检查其配置是否声明了 `image`（DSH 的 `dsh-llm-deepseek` 等适配器本身支持图像，声明后即可读图）。
 
 ## 用法模板
 

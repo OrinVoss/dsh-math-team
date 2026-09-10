@@ -51,7 +51,7 @@
 
 **怎么探测**：用 `llm` 服务的 `listProviders()` / `resolveModelInfo()` 列出本环境可用模型及能力，再按上表挑选。某角色找不到合适模型时，如实标注受限。
 
-> **本环境已验证示例**（仅供参考，非强制）：主模型 Kimi K3 · 编程 DeepSeek V4.1 Flash · 审查 Kimi K3-256K + DeepSeek V4.1 Flash 双模型各审一遍 · 识图 Kimi K2.7 Code（`kimi-coding/kimi-for-coding`）。**可用任何满足上表能力的模型替代**。
+> **本环境已验证示例**（仅供参考，非强制）：主模型 Kimi K3 · 编程 DeepSeek V4.1 Flash · 审查 Kimi K3-256K + DeepSeek V4.1 Flash 双模型各审一遍 · 识图 DeepSeek V4.1 Flash（`deepseek-official/deepseek-flash`）或 Kimi K2.7 Code（`kimi-coding/kimi-for-coding`）。**可用任何满足上表能力的模型替代**。
 
 ## 独立模型审查（多个不同模型各审一遍，对抗式评审）
 
