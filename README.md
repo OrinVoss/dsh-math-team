@@ -189,9 +189,9 @@ flowchart LR
 
 ### 强制图审 / 渲染审查 / 独立审查（贯穿全局）
 
-- **识图子代理（强制图审门禁）**：主模型不读图时，自动探测 `inputModalities` 含 `image` 的视觉模型（本环境已验证 `kimi-coding/kimi-for-coding`，不硬编码），用 `workflow` 派生视觉子代理逐张审核正式图（标题/坐标轴/图例/数据/空白遮挡/是否支撑结论）。**FAIL → 按缺陷修改 → 重审，循环直至 PASS**；每次"FAIL 原因 → 修改动作 → 重审结果"记录在案。**P2 和 W2 都强制：未走图审的图不能通过终检门禁。**
+- **识图子代理（强制图审门禁）**：主模型不读图时，自动探测 `inputModalities` 含 `image` 的视觉模型（本环境可用 DeepSeek V4.1 Flash 或 `kimi-coding/kimi-for-coding`，不硬编码），用 `workflow` 派生视觉子代理逐张审核正式图（标题/坐标轴/图例/数据/空白遮挡/是否支撑结论）。**FAIL → 按缺陷修改 → 重审，循环直至 PASS**；每次"FAIL 原因 → 修改动作 → 重审结果"记录在案。**P2 和 W2 都强制：未走图审的图不能通过终检门禁。**
 - **渲染 PDF 逐页审查（强制）**：成稿 PDF 后，把每一页渲染成图片（pdftoppm/PyMuPDF，300 DPI），用识图子代理**逐页**审查——表格超限/溢出/截断、异常字体（乱码/缺字）、过小字体不可读、排版不规范（重叠/错位/孤行孤页）、空白页/重复页、页眉页脚异常、图片模糊裁切、分页不合理。FAIL → 修正排版 → 重新渲染 → 重新逐页审，直至全部 PASS；记录留痕。**W2 强制：未做渲染逐页审查的论文不通过。**（更多检查项见 `自审框架.md`、`LaTeX格式规范.md`）
-- **独立模型审查（双模型各审一遍）**：**Kimi K3-256K + DeepSeek V4.1 Flash** 各独立审一遍做对抗式评审——事实性（数值可溯源/无编造）、一致性（口径符号自洽）、完备性（子问题覆盖）、**模型攻击**（质疑工具变量成立性/参数取值/基准依赖/缺货截断/份额稳定）、引用核验（真实存在且引用正确）。W2 前必须执行，编造数据当场拦截。
+- **独立模型审查（≥2 个不同模型各审一遍）**：挑两个与产出方不同、能力侧重不同的模型各独立审一遍做对抗式评审——事实性（数值可溯源/无编造）、一致性（口径符号自洽）、完备性（子问题覆盖）、**模型攻击**（质疑工具变量成立性/参数取值/基准依赖/缺货截断/份额稳定）、引用核验（真实存在且引用正确）。W2 前必须执行，编造数据当场拦截。
 
 ### 团队协同要点
 
@@ -205,8 +205,9 @@ flowchart LR
 - [识图子代理](docs/识图子代理.md) — 主模型不读图时的视觉审查方案
 - [方法论来源](docs/方法论来源.md) — 两套预设吸收的参考仓库内容清单
 - [示例题目全流程跑通记录](docs/示例题目全流程跑通记录.md) — 用 2023 国赛 C 题真实跑通「建模→论文→评审」完整链路的验证记录
+- [模型能力配置指南](docs/模型能力配置.md) — 模型能否读图、子代理白名单、常见报错对照（含 V4.1 Flash 图像能力声明修复实录）
 
-**English docs**: [team-collaboration.md](docs/team-collaboration.md) · [vision-subagent.md](docs/vision-subagent.md) · [attribution.md](docs/attribution.md) · [sample-run.md](docs/sample-run.md)
+**English docs**: [team-collaboration.md](docs/team-collaboration.md) · [vision-subagent.md](docs/vision-subagent.md) · [attribution.md](docs/attribution.md) · [sample-run.md](docs/sample-run.md) · [model-capabilities.md](docs/model-capabilities.md)
 
 
 ## 示例展示

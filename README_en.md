@@ -205,6 +205,7 @@ flowchart LR
 - [Team collaboration](docs/team-collaboration.md) — 3-folder collaboration protocol, handoff contract, per-role prompts
 - [Attribution](docs/attribution.md) — methodology provenance from the two reference repos
 - [Sample run record](docs/sample-run.md) — a full end-to-end run on the real 2023 CUMCM Problem C
+- [Model Capability Configuration Guide](docs/model-capabilities.md) — image input declarations, sub-agent allowlist, common error reference (incl. the V4.1 Flash image-capability fix)
 
 ## Sample showcase
 
