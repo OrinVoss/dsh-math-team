@@ -196,7 +196,10 @@ git pull                            # 开始时拉取最新；只读他人文件
 | MATLAB 实现 | `roles-编程手/MATLAB规范.md` |
 | 画图 / 出版级可视化 | `可视化规范/SKILL.md` 及 `可视化规范/chart-types/`、`design/`、`quality/` 下文档 |
 | 读题目/附件 PDF（双通道） | `scripts/read_pdf.py` + 本文件「阶段一 · 读题与盘点」 |
+| 竞赛截止时间 / 可提交性优先 | `交付与截止时间协议.md` |
 | Gitee 提交 | 本文件「团队协同模型」小节 |
+
+> **路径说明**：`scripts/*` 相对本 skill 根目录，其余相对 `references/`。
 
 > 说明：这些文档移自 `math-modeling-skill` 参考仓库（脚本与工具源码未搬入，仅方法论文档）。需要脚本/工具实现时按文档中的思路自行实现，或团队后续单独补充。
 

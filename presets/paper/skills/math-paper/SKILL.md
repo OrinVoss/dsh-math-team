@@ -171,6 +171,10 @@ uv run --with pypdf --with pymupdf python <SKILL_ROOT>/scripts/read_pdf.py <文�
 | 获奖级评审门禁（盲评/有界迭代） | `获奖评审/评审门禁-award-gates.md` |
 | 证据检索与引用核验 | `获奖评审/证据检索-evidence-search.md` |
 | 完整获奖工作流方法论 | `获奖评审/工作流方法论-WORKFLOWS_zh.md` |
+| 竞赛截止时间 / 可提交性优先 | `交付与截止时间协议.md` |
+| 读题目/官方模板 PDF（双通道） | `scripts/read_pdf.py` + 本文件「第零步」 |
+
+> **路径说明**：`scripts/*` 相对本 skill 根目录，其余相对 `references/`。
 
 > 说明：`roles-论文手/*` 移自 `math-modeling-skill` 参考仓库；`获奖评审/*` 移自 `mathodology` 参考仓库。仅方法论文档，脚本/工具源码未搬入，需实现时按文档思路自行实现或之后单独补充。
 
