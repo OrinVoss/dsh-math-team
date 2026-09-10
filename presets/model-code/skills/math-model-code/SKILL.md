@@ -115,9 +115,13 @@ git pull                            # 开始时拉取最新；只读他人文件
 
 > 这些案例表明：M2 不是走过场，它能把"看似成立但经不起追问"的结论拦在论文之外。
 
-## 识图子代理（当主模型不支持图像输入时）—— 强制图审门禁
+## 图表质检（图审）—— 强制门禁
 
-主模型可能不支持读图（`read_image` 会拒读）。**所有正式图在 P2 终检前必须经视觉模型审核**（是否空白、遮挡、坐标轴缺标签、是否支撑结论）。这是强制门禁，不是可选项：
+**所有正式图在 P2 终检前必须经过视觉审查**（是否空白、遮挡、坐标轴缺标签、是否支撑结论）。这是强制门禁，不是可选项。
+
+**执行方式（优先第一种）**：
+1. **主模型直接读图（首选）**：若当前主模型的 `inputModalities` 含 `image`（用 `llm.resolveModelInfo` 确认），直接用 `read_image` 工具**逐张读图审查**——快、少一层派发。主模型能读图时不需要再派识图子代理。
+2. **识图子代理（主模型不支持图像时）**：用 `workflow` 派发一个指定视觉模型的子代理去读图，方式如下。
 
 - **先探测可用的视觉模型（成本优先）**：不要硬编码模型名。用 `llm` 服务的 `listProviders()` / `resolveModelInfo(provider, model)` 遍历各 provider，挑出 `inputModalities` 含 `image` 的模型作为识图模型，得到 `{ provider, model }`。**优先选择经济型视觉模型**（识图是高频轻量任务，不需要强推理），避免用最贵的旗舰。本环境已验证可用：`deepseek-official/deepseek-flash`（DeepSeek V4.1 Flash，官方便是"快·高效·经济"定位，已配置 image 能力）与 `kimi-coding/kimi-for-coding`（Kimi K2.7 Code）。
 - **⚠️ 模型必须声明图像能力**：`inputModalities` 在配置里**默认是 `["text"]`**；若某模型实际支持读图却被拒（`read_image` 报 "does not declare image input"），检查 `settings.yaml` 中该模型是否声明了 `image`。

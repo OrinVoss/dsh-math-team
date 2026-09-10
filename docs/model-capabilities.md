@@ -127,7 +127,19 @@ subagent-model-selection:
 
 ---
 
-## 6. Takeaways
+## 6. File-reading capability comparison (measured 2026-09-10)
+
+| Type | Can the main model read it directly? | Notes |
+|---|---|---|
+| **Images** (PNG / JPG / WebP / GIF) | ✅ **Yes** (if `image` is declared in config) | Use `read_image` directly; the main model sees the image and can review it |
+| **PDF** | ❌ **No** | The `read` tool only handles UTF-8 text and returns `binary file` for PDFs; extract with a script (pypdf / pdfplumber), or upload via the Web UI and read through the file tool |
+
+**Impact on workflow**:
+- **Figure QA can be done by the main model** when it supports images — no need to dispatch a vision sub-agent (one less hop);
+- **Still use a vision sub-agent when**: ① the main model cannot read images; ② you want an independent/isolated visual verdict, or a cheaper vision model;
+- **PDF problems/templates still need scripted text extraction** (no native PDF tool on the agent side today).
+
+## 7. Takeaways
 
 1. **"Can it read images" depends on the declaration, not the model's reputation** — verify with `resolveModelInfo` instead of guessing;
 2. If a genuinely image-capable model is refused, **first check whether `image` is declared in its config**;
