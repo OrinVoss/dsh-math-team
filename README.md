@@ -1,5 +1,13 @@
 # DSH 数学建模团队插件包
 
+> ## 🎉 预祝 2026 数模国赛顺利！
+>
+> 愿所有参赛的同学：**题意读得准，模型站得住，代码一次跑通，图表一眼看懂，论文写完还有时间睡一觉。**
+>
+> 发题后别慌，记住七件事：先拆题 → 先跑最小可运行 → 主动攻击自己的模型 → 图一定审 → 交稿前逐页看渲染 PDF → 审查用两个不同模型各审一遍 → 三人三文件夹只提交自己的。
+>
+> **数模人，加油！** 🚀
+
 > 🌍 **English**: [README_en.md](README_en.md) — bilingual docs: [team-collaboration.md](docs/team-collaboration.md) · [vision-subagent.md](docs/vision-subagent.md) · [attribution.md](docs/attribution.md) · [sample-run.md](docs/sample-run.md)
 
 面向 **DeepSeek Harness** 的团队化数学建模工作流插件包。把参考成熟数学建模 Skill 仓库的方法论，整理成 **2 套可直接安装的 Agent 预设（preset）**，配合团队 **Gitee/GitHub 多文件夹协同**，实现多人在各自独立工作区互不干扰地协作完成数学建模竞赛题。

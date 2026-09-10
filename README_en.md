@@ -1,5 +1,13 @@
 # DSH Math Modeling Team Plugin Pack
 
+> ## 🎉 Good luck to everyone in the 2026 CUMCM!
+>
+> May your problem reading be accurate, your models defensible, your code run right the first time, your figures instantly readable, and your paper finished with time to spare.
+>
+> Seven things once the problem drops: split the problem → get a minimal runnable first → attack your own model → always review your figures → page through the rendered PDF before submitting → have two different models review → three members, three folders, commit only your own.
+>
+> **Go math modelers!** 🚀
+
 Team-based math modeling workflow plugins for **DeepSeek Harness**. It distills the methodologies of mature math-modeling skill repos into **2 installable agent presets**, paired with a **multi-folder Git collaboration** model (Gitee/GitHub), so multiple people can work independently in their own workspaces without interference.
 
 Hosted under the GitHub Topic: **`dsh-plugin`**.
